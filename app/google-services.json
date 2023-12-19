@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1050430559423",
+    "project_id": "dsa450-38512",
+    "storage_bucket": "dsa450-38512.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050430559423:android:1b37d75c7c9c51c8a6e20a",
+        "android_client_info": {
+          "package_name": "com.aayush.greetingsapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfdujQpqCjpl-Poq5s3PvD7NZqASbaJHg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

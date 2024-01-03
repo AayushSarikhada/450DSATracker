@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -74,4 +76,30 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.airbnb.android:lottie-compose:6.2.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+
+    //Retrofit and GSON
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC2")
+
+    // ViewModel and LiveData
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+
+    // Dagger Hilt (Dependency Injection)
+    implementation("com.google.dagger:hilt-android:2.44")
+    ksp("com.google.dagger:hilt-android-compiler:2.44")
+
+    // Room Database
+    val roomVersion = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+
+    // To use Kotlin annotation processing tool (kapt)
+    ksp("androidx.room:room-compiler:2.6.1")
+
+
+
 }

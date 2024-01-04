@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,10 +23,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,81 +40,53 @@ import com.aayush.greetingsapp.model.DSAProblem
 import com.aayush.greetingsapp.others.DSAProblemsCSVHeader
 import com.aayush.greetingsapp.ui.theme.GreetingsAppTheme
 import com.aayush.greetingsapp.ui.theme.Typography
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.aayush.greetingsapp.viewmodel.DSAProblemVM
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.apache.commons.csv.CSVFormat
 
 
-private val listOfDSAProblems = arrayListOf<DSAProblem>()
-
 class MainActivity : ComponentActivity() {
-
-    // variables
-    private val db = Firebase.firestore
 
     // life cycle functions
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GreetingsAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    readProblemCSVFile()
-                    val temp = DSAProblem(1,"aaa","bbb",true)
-                    db.collection("users")
-                        .add(temp)
-                        .addOnSuccessListener { documentReference ->
-                            Log.d("TAG", "DocumentSnapshot added with ID: ${documentReference.id}")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.w("TAG", "Error adding document", e)
-                        }
-                    LazyColumn {
-                        items(listOfDSAProblems) {
-                            RowDSAProblems(problem = it)
-                        }
-                    }
-
-                }
+                DSAProblemListScreen()
             }
         }
-    }
-
-    // util functions
-    private fun readProblemCSVFile() {
-        var id = 0
-        val inputStream = resources.openRawResource(R.raw.fin)
-        val bufferedReader = inputStream.bufferedReader()
-        CSVFormat.Builder.create(CSVFormat.RFC4180).apply {
-            setIgnoreHeaderCase(true)
-            setIgnoreSurroundingSpaces(true)
-            setHeader(DSAProblemsCSVHeader::class.java)
-        }
-            .build()
-            .parse(bufferedReader)
-            .drop(1)
-            .map {
-                val pType = it.get(DSAProblemsCSVHeader.TYPE)
-                val pName = it.get(DSAProblemsCSVHeader.PROBLEM)
-                val pDone = it.get(DSAProblemsCSVHeader.DONE)
-
-                listOfDSAProblems.add(
-                    DSAProblem(
-                        id = id++,
-                        pType,
-                        pName,
-                        pDone == "YES"
-                    )
-                )
-            }
     }
 
 }
 
 @Composable
-fun RowDSAProblems(problem: DSAProblem) {
+fun LoadingLottieAnimation(modifier: Modifier) {
+
+    val loadingComposition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(
+            R.raw.loading
+        )
+    )
+
+    LottieAnimation(
+        composition = loadingComposition,
+        iterations = LottieConstants.IterateForever,
+        isPlaying = true,
+        modifier = modifier
+    )
+
+}
+
+@Composable
+fun RowDSAProblems(
+    problem: DSAProblem,
+    viewModel: DSAProblemVM
+) {
 
     var checked by remember { mutableStateOf(problem.problemDone) }
 
@@ -149,8 +124,10 @@ fun RowDSAProblems(problem: DSAProblem) {
         Column {
             IconToggleButton(checked = checked,
                 onCheckedChange = {
-                    listOfDSAProblems[problem.id].problemDone = it
+                    viewModel.dsaProblems[problem.id].problemDone = it
                     checked = it
+                    Log.d("onCheckedChange", "problem no. ${problem.id} done!!!")
+                    viewModel.updateFireBaseData(problem.id)
                 }) {
                 Icon(
                     Icons.Outlined.CheckCircle,
@@ -160,6 +137,49 @@ fun RowDSAProblems(problem: DSAProblem) {
             }
         }
     }
+    
+}
+
+@Composable
+fun SetStatusBarColor(color: Color) {
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(color)
+    }
+}
+
+@Composable
+fun DSAProblemListScreen(
+    viewModel: DSAProblemVM = DSAProblemVM()
+) {
+    // A surface container using the 'background' color from the theme
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Box {
+            if(viewModel.isLoading.value) {
+                LoadingLottieAnimation(modifier = Modifier.align(Alignment.Center))
+            } else {
+                SetStatusBarColor(color = Color.Green)
+                DSAProblemList(viewModel.dsaProblems, viewModel)
+            }
+        }
+
+    }
+}
+
+@Composable
+fun DSAProblemList(
+    listOfProblems: SnapshotStateList<DSAProblem>,
+    viewModel: DSAProblemVM
+) {
+    Log.d("MAIN", listOfProblems.size.toString())
+    LazyColumn {
+        items(listOfProblems) {
+            Log.d("LAZY COLUMN", "${it.id}")
+            RowDSAProblems(problem = it, viewModel)
+        }
+    }
 
 }
 
@@ -167,6 +187,6 @@ fun RowDSAProblems(problem: DSAProblem) {
 @Composable
 fun GreetingPreview() {
     Surface(color = Color.DarkGray) {
-        RowDSAProblems(DSAProblem(0, "Array", "Solve the Array", true))
+//        RowDSAProblems(DSAProblem(0, "Array", "Solve the Array", true))
     }
 }

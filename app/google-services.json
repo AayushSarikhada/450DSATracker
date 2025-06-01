@@ -5,11 +5,10 @@
     "storage_bucket": "dsa450-38512.appspot.com"
   },
   "client": [
-    {
-      "client_info": {
+    {      "client_info": {
         "mobilesdk_app_id": "1:1050430559423:android:1b37d75c7c9c51c8a6e20a",
         "android_client_info": {
-          "package_name": "com.aayush.greetingsapp"
+          "package_name": "com.aayush.dsa450"
         }
       },
       "oauth_client": [],

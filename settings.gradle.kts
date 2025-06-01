@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Greetings App"
+rootProject.name = "DSA 450"
 include(":app")
  

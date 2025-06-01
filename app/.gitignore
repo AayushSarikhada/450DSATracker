@@ -1,1 +1,25 @@
+# Build outputs
 /build
+/release
+
+# Generated files
+/generated
+
+# Room database schemas (if you want to exclude them)
+# Uncomment if you don't want to version control database schemas
+# /schemas/
+
+# Hilt generated files
+*.hilt_aggregated_deps
+
+# Proguard/R8 mapping files (for release builds)
+/proguard/
+/mapping.txt
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test reports
+/reports
+/test-results

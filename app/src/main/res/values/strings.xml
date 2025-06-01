@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">DSA 450</string>
+    <string name="problems_loaded">Problems loaded successfully</string>
+    <string name="error_loading_problems">Error loading problems</string>
+    <string name="error_updating_problem">Error updating problem status</string>
+    <string name="sync_successful">Sync completed successfully</string>
+    <string name="import_successful">CSV imported successfully</string>
+    <string name="search_hint">Search problems...</string>
+    <string name="filter_all">All</string>
+    <string name="completed">Completed</string>
+    <string name="pending">Pending</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    
+    <!-- Error states -->
+    <string name="error_title">Something went wrong</string>
+    <string name="retry">Try Again</string>
+    <string name="empty_state_title">No data available</string>
+    <string name="no_problems_found">No problems found matching your search</string>
+    <string name="no_internet_connection">No internet connection. Please check your network settings.</string>
+    <string name="sync_in_progress">Syncing data...</string>
+    
+    <!-- Accessibility -->
+    <string name="problem_completed_description">Problem marked as completed</string>
+    <string name="problem_pending_description">Problem marked as pending</string>
+    <string name="difficulty_easy_description">Easy difficulty</string>
+    <string name="difficulty_medium_description">Medium difficulty</string>
+    <string name="difficulty_hard_description">Hard difficulty</string>
+    <string name="loading_description">Loading content</string>
 </resources>
